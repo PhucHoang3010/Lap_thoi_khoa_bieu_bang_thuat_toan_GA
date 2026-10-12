@@ -1,0 +1,3 @@
+﻿"Dataset","Algorithm","Seed","RuntimeMs","HardViolations","SoftPenalty","PreferenceReward"
+"small","genetic","1","218.01","0","5","34"
+"medium","genetic","1","3124.52","0","20","111"

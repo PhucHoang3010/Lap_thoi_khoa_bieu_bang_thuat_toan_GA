@@ -1,0 +1,13 @@
+﻿Dataset,Parameter,Value,RuntimeMs,HardViolations,SoftPenalty,PreferenceReward
+medium,population,10,2894.68,0,19.0,112.0
+medium,population,20,3763.64,0,17.5,113.0
+medium,population,30,4745.94,0,18.0,113.0
+medium,mutation_rate,0.01,2714.42,0,19.0,112.0
+medium,mutation_rate,0.05,2890.19,0,19.0,112.0
+medium,mutation_rate,0.1,3086.19,0,18.5,112.0
+medium,crossover_rate,0.6,2799.17,0,19.5,111.0
+medium,crossover_rate,0.8,2800.93,0,19.0,112.0
+medium,crossover_rate,0.9,2790.63,0,19.0,112.0
+medium,generations,10,2560.04,0,19.0,112.0
+medium,generations,20,2782.26,0,19.0,112.0
+medium,generations,30,3009.59,0,19.0,112.0

@@ -18,7 +18,8 @@ class GeneticAlgorithm:
         seed=42,
     ):
         self.ctx = ctx
-        self.evaluate = evaluate
+        self._raw_evaluate = evaluate
+        self._fitness_cache = {}
         self.population_size = population
         self.generations = generations
         self.crossover_rate = crossover_rate
@@ -26,6 +27,30 @@ class GeneticAlgorithm:
         self.elite = min(elite, population)
         self.tournament_size = tournament_size
         self.rng = random.Random(seed)
+
+    # Max cached fitness values before the cache is reset (bounds memory).
+    CACHE_LIMIT = 50_000
+
+    def evaluate(self, chromosome, ctx=None):
+        """
+        Memoized fitness evaluation.
+
+        Chromosomes are immutable (genes is a tuple of frozen Genes), so the
+        same genes always give the same fitness. The GA evaluates the same
+        individuals many times per generation (sorting, tournaments,
+        crossover/mutation checks), so caching avoids most of that work.
+        """
+        key = chromosome.genes
+        fitness = self._fitness_cache.get(key)
+
+        if fitness is None:
+            if len(self._fitness_cache) >= self.CACHE_LIMIT:
+                self._fitness_cache.clear()
+
+            fitness = self._raw_evaluate(chromosome, ctx or self.ctx)
+            self._fitness_cache[key] = fitness
+
+        return fitness
 
     def greedy_chromosome(self):
         from app.solver.greedy import greedy_solve
@@ -260,9 +285,13 @@ class GeneticAlgorithm:
         # 3. Nếu đã có ít nhất một chromosome khả thi,
         #    nhân bản để đủ population.
         if population:
+            feasible_count = len(population)
+
+            # Cycle through all feasible seeds instead of always cloning
+            # the first one, to keep some diversity.
             while len(population) < self.population_size:
                 source = population[
-                    len(population) % len(population)
+                    len(population) % feasible_count
                 ]
 
                 population.append(
